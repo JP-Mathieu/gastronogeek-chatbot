@@ -74,3 +74,6 @@
 - [x] Allow syncing more than 50 videos at once (via pagination/multiple clicks)
 - [x] Add clear instructions for batch syncing
 - [x] Show total available videos count
+
+## Critical Bugs
+- [x] Fix pagination - sync button now fetches next batch of videos using pageToken

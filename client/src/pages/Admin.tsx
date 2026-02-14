@@ -12,7 +12,8 @@ export default function Admin() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [isSyncing, setIsSyncing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [syncCount, setSyncCount] = useState(1); // 1 batch = 50 videos
+  const [syncCount, setSyncCount] = useState(1);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const t = useTranslation("fr");
 
   const syncMutation = trpc.content.syncYouTubeVideos.useMutation();
@@ -26,11 +27,18 @@ export default function Admin() {
     setIsSyncing(true);
     try {
       const result = await syncMutation.mutateAsync({
-        maxResults: 50, // YouTube API limits to 50 per request
+        maxResults: 50,
+        pageToken: nextPageToken || undefined,
       });
 
-      toast.success(result.message);
-      // Refetch video count and stored videos
+      setNextPageToken(result.nextPageToken || null);
+
+      if (result.videosProcessed === 0 && result.nextPageToken === null) {
+        toast.info("All videos synchronized!");
+      } else {
+        toast.success(result.message);
+      }
+
       videoCountQuery.refetch();
       storedVideosQuery.refetch();
     } catch (error) {
