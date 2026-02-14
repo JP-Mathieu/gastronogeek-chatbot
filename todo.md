@@ -87,4 +87,4 @@
 - [x] Fixed by replacing like() with ilike() for case-insensitive search
 
 ## Search Improvements
-- [x] Increase search scope - now searches up to 50 videos, returns top 5
+- [x] Increase search scope - now searches ALL videos in database, returns top 5

@@ -51,13 +51,12 @@ export const chatbotRouter = router({
               ilike(videos.description, `%${keyword}%`),
             ]);
             
-            // Search for videos matching any keyword (search up to 50, return top 5)
+            // Search for videos matching any keyword (search ALL videos, return top 5)
             const allMatches = await db
               .select()
               .from(videos)
               .where(or(...searchConditions))
-              .orderBy(desc(videos.publishedAt))
-              .limit(50);
+              .orderBy(desc(videos.publishedAt));
             
             // Return only the top 5 most relevant results
             searchResults = allMatches.slice(0, 5);
