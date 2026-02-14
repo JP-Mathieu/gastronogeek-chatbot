@@ -67,13 +67,17 @@ export async function fetchGastronogeekVideos(
       throw new Error("YOUTUBE_API_KEY is not set");
     }
 
+    // YouTube API limits to 50 results per request
+    // If user requests more than 50, we return 50 and they can paginate
+    const requestLimit = Math.min(maxResults, 50);
+
     // First, search for videos in the channel
     const searchResponse = await axios.get(`${YOUTUBE_API_BASE}/search`, {
       params: {
         part: "snippet",
         channelId: GASTRONOGEEK_CHANNEL_ID,
         type: "video",
-        maxResults: Math.min(maxResults, 50),
+        maxResults: requestLimit,
         pageToken: pageToken,
         key: YOUTUBE_API_KEY,
         order: "date",

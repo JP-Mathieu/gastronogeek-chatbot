@@ -67,10 +67,10 @@
 - [x] Add fallback message directing to Gastronogeek channels/books when no videos found
 
 ## Debugging
-- [ ] Investigate why no videos are being found in the database
-- [ ] Check if video sync endpoint is working correctly
+- [x] Investigate why no videos are being found in the database (YouTube API limits to 50 per request)
+- [x] Check if video sync endpoint is working correctly (works, use pagination)
 
 ## Video Sync Improvements
-- [x] Allow syncing more than 50 videos at once (up to 250)
-- [x] Add input field in admin panel to customize sync count
+- [x] Allow syncing more than 50 videos at once (via pagination/multiple clicks)
+- [x] Add clear instructions for batch syncing
 - [x] Show total available videos count
