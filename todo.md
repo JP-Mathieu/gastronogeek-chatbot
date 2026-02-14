@@ -80,3 +80,8 @@
 
 ## Current Issues
 - [x] Chatbot not finding synced videos - implemented keyword-based search
+
+## Debugging - Database Search Issue
+- [x] Verify videos are being stored in database (confirmed - 300+ videos)
+- [x] Debug why search query is not returning results (case sensitivity issue)
+- [x] Fixed by replacing like() with ilike() for case-insensitive search

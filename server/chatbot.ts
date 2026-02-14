@@ -2,7 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
 import { chatMessages, chatSessions, videos, recipes, ChatMessage } from "../drizzle/schema";
-import { eq, desc, or, like } from "drizzle-orm";
+import { eq, desc, or, ilike } from "drizzle-orm";
 import { generateStrictContextResponse } from "./services/mistralService";
 
 // Schema for chat input
@@ -45,10 +45,10 @@ export const chatbotRouter = router({
           let searchResults: any[] = [];
           
           if (keywords.length > 0) {
-            // Build search conditions for each keyword
+            // Build search conditions for each keyword (case-insensitive)
             const searchConditions = keywords.flatMap(keyword => [
-              like(videos.title, `%${keyword}%`),
-              like(videos.description, `%${keyword}%`),
+              ilike(videos.title, `%${keyword}%`),
+              ilike(videos.description, `%${keyword}%`),
             ]);
             
             // Search for videos matching any keyword

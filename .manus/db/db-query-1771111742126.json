@@ -1,0 +1,14 @@
+{
+  "query": "SELECT COUNT(*) as total_videos, COUNT(DISTINCT title) as unique_titles FROM videos;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 26oDA9qpHbzWw5w.root --database XyXSsn46zxa6qfQtPijiEs --execute SELECT COUNT(*) as total_videos, COUNT(DISTINCT title) as unique_titles FROM videos;",
+  "rows": [
+    {
+      "total_videos": "340",
+      "unique_titles": "340"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_videos\tunique_titles\n340\t340\n",
+  "stderr": "",
+  "execution_time_ms": 88
+}

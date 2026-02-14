@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, title FROM videos WHERE LOWER(title) LIKE '%pâtes%' OR LOWER(title) LIKE '%curry%' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 26oDA9qpHbzWw5w.root --database XyXSsn46zxa6qfQtPijiEs --execute SELECT id, title FROM videos WHERE LOWER(title) LIKE '%pâtes%' OR LOWER(title) LIKE '%curry%' LIMIT 5;",
+  "rows": [
+    {
+      "id": "5",
+      "title": "LE CURRY AUX FRUITS DE FURERU"
+    },
+    {
+      "id": "25",
+      "title": "Les pâtes de la flemme V4 !"
+    },
+    {
+      "id": "34",
+      "title": "Le curry extra savoureux avec @dreadyamada !"
+    },
+    {
+      "id": "42",
+      "title": "La soupe de lasagnes ! Pâtes de la flemme V3"
+    },
+    {
+      "id": "45",
+      "title": "Les pâtes de la flemme V2 !"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\n5\tLE CURRY AUX FRUITS DE FURERU\n25\tLes pâtes de la flemme V4 !\n34\tLe curry extra savoureux avec @dreadyamada !\n42\tLa soupe de lasagnes ! Pâtes de la flemme V3\n45\tLes pâtes de la flemme V2 !\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}
