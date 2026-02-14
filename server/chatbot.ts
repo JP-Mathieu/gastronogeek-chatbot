@@ -3,7 +3,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
 import { chatMessages, chatSessions, videos, recipes, ChatMessage } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
-import { generateMistralResponse } from "./services/mistralService";
+import { generateStrictContextResponse } from "./services/mistralService";
 
 // Schema for chat input
 const chatInputSchema = z.object({
@@ -30,22 +30,18 @@ export const chatbotRouter = router({
         const { message, sessionId } = input;
         const userId = ctx.user.id;
 
-        // Generate response using Mistral AI
-        const botResponse = await generateMistralResponse(
-          message,
-          "You are a helpful cooking assistant based on Gastronogeek's recipes and cooking videos. Help users with cooking questions, recipes, and techniques. Respond in French when the user writes in French."
-        );
-
         // Get database connection
         const db = await getDb();
         
         // Search for relevant videos based on the user's message
         let sourceVideos: any[] = [];
+        let videoContext = "";
+        
         if (db) {
           const searchResults = await db
             .select()
             .from(videos)
-            .limit(3);
+            .limit(5);
           
           sourceVideos = searchResults.map(v => ({
             id: v.id,
@@ -56,7 +52,18 @@ export const chatbotRouter = router({
             duration: v.duration,
             viewCount: v.viewCount,
           }));
+          
+          // Build context from videos for the LLM
+          videoContext = sourceVideos
+            .map(v => `Titre: ${v.title}\nDescription: ${v.description || 'N/A'}\nURL: ${v.videoUrl}`)
+            .join("\n\n");
         }
+
+        // Generate response using strict context-only mode (temperature 0)
+        const { response: botResponse, hasContext } = await generateStrictContextResponse(
+          message,
+          videoContext
+        );
 
         // Save the chat message to the database
         if (db) {
@@ -64,7 +71,7 @@ export const chatbotRouter = router({
             userId,
             userMessage: message,
             botResponse,
-            sourceVideos: JSON.stringify(sourceVideos),
+            sourceVideos: JSON.stringify(hasContext ? sourceVideos : []),
             sourceRecipes: JSON.stringify([]),
           });
         }
@@ -72,13 +79,13 @@ export const chatbotRouter = router({
         return {
           userMessage: message,
           botResponse,
-          sourceVideos,
+          sourceVideos: hasContext ? sourceVideos : [],
           sourceRecipes: [],
           timestamp: new Date(),
         };
       } catch (error) {
         console.error("Error in sendMessage:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to process your message";
+        const errorMessage = error instanceof Error ? error.message : "Erreur lors du traitement de votre message";
         throw new Error(errorMessage);
       }
     }),

@@ -9,11 +9,12 @@ if (!apiKey) {
 const client = new Mistral({ apiKey });
 
 /**
- * Generate a response using Mistral AI
+ * Generate a response using Mistral AI with temperature 0 (deterministic)
  */
 export async function generateMistralResponse(
   userMessage: string,
-  systemPrompt: string = "You are a helpful cooking assistant. Answer questions about recipes and cooking techniques."
+  systemPrompt: string = "You are a helpful cooking assistant. Answer questions about recipes and cooking techniques.",
+  temperature: number = 0
 ): Promise<string> {
   try {
     const response = await client.chat.complete({
@@ -29,6 +30,7 @@ export async function generateMistralResponse(
         },
       ],
       maxTokens: 1024,
+      temperature,
     });
 
     const message = response.choices?.[0]?.message?.content;
@@ -84,21 +86,47 @@ export async function generateMistralEmbedding(
 }
 
 /**
- * Generate a response with context from videos
+ * Generate a response with context from videos (temperature 0 - no hallucinations)
  */
 export async function generateContextualResponse(
   userMessage: string,
   context: string
 ): Promise<string> {
-  const systemPrompt = `You are a helpful cooking assistant powered by Gastronogeek's video content.
-Use the provided context from videos to answer questions about recipes and cooking techniques.
-If the context doesn't contain relevant information, provide general cooking advice based on your knowledge.
-Always be friendly and encouraging.
+  const systemPrompt = `You are a cooking assistant powered by Gastronogeek's video content.
+You MUST ONLY answer questions based on the provided context from videos.
+If the context is empty or doesn't contain relevant information, you MUST respond with:
+"Je n'ai pas trouvé de vidéo correspondante dans notre base de données. Je vous recommande de consulter directement les chaînes de Gastronogeek (YouTube, Instagram, TikTok, Twitch) ou ses livres de recettes pour plus d'informations."
+
+Do NOT infer, guess, or provide general cooking advice. Only use the provided context.
+Always be helpful and direct users to Gastronogeek's official sources.
 
 Context from videos:
-${context}`;
+${context || "[Aucune vidéo disponible]"}`;
 
-  return generateMistralResponse(userMessage, systemPrompt);
+  return generateMistralResponse(userMessage, systemPrompt, 0);
+}
+
+/**
+ * Generate a response that only uses provided context (strict mode)
+ */
+export async function generateStrictContextResponse(
+  userMessage: string,
+  videoContext: string
+): Promise<{ response: string; hasContext: boolean }> {
+  const hasContext = videoContext && videoContext.trim().length > 0;
+  
+  if (!hasContext) {
+    return {
+      response: "Je n'ai pas trouvé de vidéo correspondante dans notre base de données. Je vous recommande de consulter directement les chaînes de Gastronogeek (YouTube, Instagram, TikTok, Twitch) ou ses livres de recettes pour plus d'informations.",
+      hasContext: false,
+    };
+  }
+
+  const response = await generateContextualResponse(userMessage, videoContext);
+  return {
+    response,
+    hasContext: true,
+  };
 }
 
 /**

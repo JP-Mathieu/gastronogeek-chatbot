@@ -60,3 +60,8 @@
 
 ## Current Feature Work
 - [x] Add source links below chatbot responses
+
+## Anti-Hallucination Features
+- [x] Set Mistral temperature to 0 for deterministic responses
+- [x] Modify chatbot to only answer based on synced videos
+- [x] Add fallback message directing to Gastronogeek channels/books when no videos found
