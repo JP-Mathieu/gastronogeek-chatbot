@@ -65,3 +65,12 @@
 - [x] Set Mistral temperature to 0 for deterministic responses
 - [x] Modify chatbot to only answer based on synced videos
 - [x] Add fallback message directing to Gastronogeek channels/books when no videos found
+
+## Debugging
+- [ ] Investigate why no videos are being found in the database
+- [ ] Check if video sync endpoint is working correctly
+
+## Video Sync Improvements
+- [x] Allow syncing more than 50 videos at once (up to 250)
+- [x] Add input field in admin panel to customize sync count
+- [x] Show total available videos count

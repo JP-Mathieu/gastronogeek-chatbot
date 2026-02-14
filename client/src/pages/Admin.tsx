@@ -12,6 +12,7 @@ export default function Admin() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [isSyncing, setIsSyncing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [syncCount, setSyncCount] = useState(50);
   const t = useTranslation("fr");
 
   const syncMutation = trpc.content.syncYouTubeVideos.useMutation();
@@ -25,7 +26,7 @@ export default function Admin() {
     setIsSyncing(true);
     try {
       const result = await syncMutation.mutateAsync({
-        maxResults: 50,
+        maxResults: syncCount,
       });
 
       toast.success(result.message);
@@ -170,6 +171,20 @@ export default function Admin() {
               <p className="text-sm text-muted-foreground mb-4">
                 {getTranslation(t, "admin.youtubeSyncDesc")}
               </p>
+              <div className="mb-4 flex items-center gap-4">
+                <label className="text-sm font-medium">
+                  Nombre de vidéos à synchroniser:
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="250"
+                  value={syncCount}
+                  onChange={(e) => setSyncCount(Math.max(1, parseInt(e.target.value) || 50))}
+                  className="px-3 py-2 border border-input rounded-md text-sm w-24"
+                  disabled={isSyncing}
+                />
+              </div>
               <Button
                 onClick={handleSyncVideos}
                 disabled={isSyncing}
