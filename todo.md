@@ -85,3 +85,6 @@
 - [x] Verify videos are being stored in database (confirmed - 300+ videos)
 - [x] Debug why search query is not returning results (case sensitivity issue)
 - [x] Fixed by replacing like() with ilike() for case-insensitive search
+
+## Search Improvements
+- [x] Increase search scope - now searches up to 50 videos, returns top 5
