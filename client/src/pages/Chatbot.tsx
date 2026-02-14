@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Redirect } from "wouter";
 import { useTranslation, getTranslation } from "@/hooks/useTranslation";
 import { VideoCard } from "@/components/VideoCard";
+import { ExternalLink } from "lucide-react";
 
 interface Message {
   id?: number;
@@ -218,6 +219,29 @@ export default function Chatbot() {
                         {/* Bot text response */}
                         <Card className="bg-muted p-3 rounded-lg">
                           <p className="text-sm">{msg.botResponse}</p>
+                          
+                          {/* Source links */}
+                          {msg.sourceVideos && msg.sourceVideos.length > 0 && (
+                            <div className="mt-3 pt-3 border-t border-muted-foreground/20">
+                              <p className="text-xs font-semibold text-muted-foreground mb-2">
+                                {getTranslation(t, "chatbot.sources")}:
+                              </p>
+                              <ul className="space-y-1">
+                                {msg.sourceVideos.slice(0, 3).map((video: any, idx: number) => (
+                                  <li key={idx}>
+                                    <a
+                                      href={video.videoUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-blue-600 hover:text-blue-800 hover:underline break-all"
+                                    >
+                                      {idx + 1}. {video.title}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </Card>
 
                         {/* Video cards */}

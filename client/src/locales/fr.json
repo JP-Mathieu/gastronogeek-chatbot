@@ -35,7 +35,8 @@
     "welcome": "Bienvenue !",
     "welcomeDesc": "Posez-moi n'importe quelle question sur les recettes et les techniques culinaires de Gastronogeek. Je suis là pour vous aider !",
     "thinking": "Je réfléchis...",
-    "relatedVideos": "Vidéos Connexes"
+    "relatedVideos": "Vidéos Connexes",
+    "sources": "Sources"
   },
   "admin": {
     "title": "Panneau d'Administration",

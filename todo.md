@@ -57,3 +57,6 @@
 
 ## Feature Requests
 - [x] Display video cards in chatbot instead of transcripts (thumbnails, title, link)
+
+## Current Feature Work
+- [x] Add source links below chatbot responses

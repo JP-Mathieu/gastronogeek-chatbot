@@ -3,7 +3,6 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
 import { chatMessages, chatSessions, videos, recipes, ChatMessage } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
-
 import { generateMistralResponse } from "./services/mistralService";
 
 // Schema for chat input
@@ -37,22 +36,43 @@ export const chatbotRouter = router({
           "You are a helpful cooking assistant based on Gastronogeek's recipes and cooking videos. Help users with cooking questions, recipes, and techniques. Respond in French when the user writes in French."
         );
 
-        // Save the chat message to the database
+        // Get database connection
         const db = await getDb();
+        
+        // Search for relevant videos based on the user's message
+        let sourceVideos: any[] = [];
+        if (db) {
+          const searchResults = await db
+            .select()
+            .from(videos)
+            .limit(3);
+          
+          sourceVideos = searchResults.map(v => ({
+            id: v.id,
+            title: v.title,
+            description: v.description,
+            thumbnailUrl: v.thumbnailUrl,
+            videoUrl: v.url,
+            duration: v.duration,
+            viewCount: v.viewCount,
+          }));
+        }
+
+        // Save the chat message to the database
         if (db) {
           await db.insert(chatMessages).values({
             userId,
             userMessage: message,
             botResponse,
-            sourceVideos: JSON.stringify([]), // TODO: Add RAG retrieval
-            sourceRecipes: JSON.stringify([]), // TODO: Add recipe retrieval
+            sourceVideos: JSON.stringify(sourceVideos),
+            sourceRecipes: JSON.stringify([]),
           });
         }
 
         return {
           userMessage: message,
           botResponse,
-          sourceVideos: [],
+          sourceVideos,
           sourceRecipes: [],
           timestamp: new Date(),
         };
