@@ -2,7 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
 import { chatMessages, chatSessions, videos, recipes, ChatMessage } from "../drizzle/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, or, like } from "drizzle-orm";
 import { generateStrictContextResponse } from "./services/mistralService";
 
 // Schema for chat input
@@ -38,10 +38,36 @@ export const chatbotRouter = router({
         let videoContext = "";
         
         if (db) {
-          const searchResults = await db
-            .select()
-            .from(videos)
-            .limit(5);
+          // Extract keywords from the user's message
+          const keywords = message.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+          
+          // Search for videos matching any of the keywords
+          let searchResults: any[] = [];
+          
+          if (keywords.length > 0) {
+            // Build search conditions for each keyword
+            const searchConditions = keywords.flatMap(keyword => [
+              like(videos.title, `%${keyword}%`),
+              like(videos.description, `%${keyword}%`),
+            ]);
+            
+            // Search for videos matching any keyword
+            searchResults = await db
+              .select()
+              .from(videos)
+              .where(or(...searchConditions))
+              .orderBy(desc(videos.publishedAt))
+              .limit(5);
+          }
+          
+          // If no search results, get the most recent videos
+          if (searchResults.length === 0) {
+            searchResults = await db
+              .select()
+              .from(videos)
+              .orderBy(desc(videos.publishedAt))
+              .limit(5);
+          }
           
           sourceVideos = searchResults.map(v => ({
             id: v.id,

@@ -77,3 +77,6 @@
 
 ## Critical Bugs
 - [x] Fix pagination - sync button now fetches next batch of videos using pageToken
+
+## Current Issues
+- [x] Chatbot not finding synced videos - implemented keyword-based search
