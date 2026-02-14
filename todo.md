@@ -54,3 +54,6 @@
 - [x] Replace OpenAI with Mistral in chatbot router
 - [x] Test Mistral API key validation
 - [x] All tests passing (8 chatbot tests, 3 mistral tests)
+
+## Feature Requests
+- [x] Display video cards in chatbot instead of transcripts (thumbnails, title, link)

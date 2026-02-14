@@ -9,6 +9,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Redirect } from "wouter";
 import { useTranslation, getTranslation } from "@/hooks/useTranslation";
+import { VideoCard } from "@/components/VideoCard";
 
 interface Message {
   id?: number;
@@ -178,7 +179,7 @@ export default function Chatbot() {
 
         {/* Messages Area */}
         <ScrollArea className="flex-1 p-4">
-          <div className="max-w-2xl mx-auto space-y-4">
+          <div className="max-w-4xl mx-auto space-y-4">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-12">
                 <div className="text-4xl mb-4">👨‍🍳</div>
@@ -191,10 +192,10 @@ export default function Chatbot() {
               </div>
             ) : (
               messages.map((msg, idx) => (
-                <div key={idx} className="space-y-2">
+                <div key={idx} className="space-y-3">
                   {/* User Message */}
                   <div className="flex justify-end">
-                    <Card className="bg-primary text-primary-foreground max-w-xs lg:max-w-md p-3 rounded-lg">
+                    <Card className="bg-primary text-primary-foreground max-w-md p-3 rounded-lg">
                       <p className="text-sm">{msg.userMessage}</p>
                     </Card>
                   </div>
@@ -202,7 +203,7 @@ export default function Chatbot() {
                   {/* Bot Response */}
                   {msg.isLoading ? (
                     <div className="flex justify-start">
-                      <Card className="bg-muted max-w-xs lg:max-w-md p-3 rounded-lg">
+                      <Card className="bg-muted max-w-md p-3 rounded-lg">
                         <div className="flex items-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           <span className="text-sm text-muted-foreground">
@@ -213,17 +214,35 @@ export default function Chatbot() {
                     </div>
                   ) : (
                     <div className="flex justify-start">
-                      <Card className="bg-muted max-w-xs lg:max-w-md p-3 rounded-lg">
-                        <p className="text-sm">{msg.botResponse}</p>
+                      <div className="max-w-2xl space-y-3">
+                        {/* Bot text response */}
+                        <Card className="bg-muted p-3 rounded-lg">
+                          <p className="text-sm">{msg.botResponse}</p>
+                        </Card>
+
+                        {/* Video cards */}
                         {msg.sourceVideos && msg.sourceVideos.length > 0 && (
-                          <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
-                            <p className="font-semibold mb-1">
-                              {getTranslation(t, "chatbot.relatedVideos")}:{" "}
-                              {msg.sourceVideos.length}
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold text-muted-foreground">
+                              {getTranslation(t, "chatbot.relatedVideos")} ({msg.sourceVideos.length})
                             </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {msg.sourceVideos.map((video: any) => (
+                                <VideoCard
+                                  key={video.id}
+                                  id={video.id}
+                                  title={video.title}
+                                  description={video.description}
+                                  thumbnailUrl={video.thumbnailUrl}
+                                  videoUrl={video.videoUrl}
+                                  duration={video.duration}
+                                  viewCount={video.viewCount}
+                                />
+                              ))}
+                            </div>
                           </div>
                         )}
-                      </Card>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -235,7 +254,7 @@ export default function Chatbot() {
 
         {/* Input Area */}
         <div className="border-t bg-background p-4">
-          <form onSubmit={handleSendMessage} className="max-w-2xl mx-auto">
+          <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
             <div className="flex gap-2">
               <Input
                 placeholder={getTranslation(t, "chatbot.placeholder")}
