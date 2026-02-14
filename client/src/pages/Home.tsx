@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ChefHat } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
+import { useTranslation, getTranslation } from "@/hooks/useTranslation";
 
 /**
  * Home page - Landing page with login or chatbot access
@@ -10,6 +11,7 @@ import { useLocation } from "wouter";
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [, setLocation] = useLocation();
+  const t = useTranslation("fr");
 
   if (loading) {
     return (
@@ -32,7 +34,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">{user.name}</span>
               <Button variant="outline" size="sm" onClick={() => logout()}>
-                Logout
+                {getTranslation(t, "common.logout")}
               </Button>
             </div>
           </div>
@@ -42,11 +44,10 @@ export default function Home() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-              Welcome to Gastronogeek Chatbot
+              {getTranslation(t, "home.title")}
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              Ask me anything about cooking! Get recipes, techniques, and tips
-              inspired by Gastronogeek's amazing videos.
+              {getTranslation(t, "home.subtitle")}
             </p>
             <div className="flex gap-4 justify-center">
               <Button
@@ -55,7 +56,7 @@ export default function Home() {
                 onClick={() => setLocation("/chatbot")}
               >
                 <ChefHat className="w-5 h-5 mr-2" />
-                Start Chatting
+                {getTranslation(t, "home.startChatting")}
               </Button>
               {user?.role === "admin" && (
                 <Button
@@ -63,7 +64,7 @@ export default function Home() {
                   variant="outline"
                   onClick={() => setLocation("/admin")}
                 >
-                  Admin Panel
+                  {getTranslation(t, "home.adminPanel")}
                 </Button>
               )}
             </div>
@@ -74,33 +75,30 @@ export default function Home() {
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <div className="text-3xl mb-4">👨‍🍳</div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Expert Recipes
+                {getTranslation(t, "home.features.expertRecipes")}
               </h3>
               <p className="text-gray-600">
-                Access recipes from Gastronogeek's extensive video library,
-                inspired by anime, movies, and pop culture.
+                {getTranslation(t, "home.features.expertRecipesDesc")}
               </p>
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <div className="text-3xl mb-4">🎬</div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Video References
+                {getTranslation(t, "home.features.videoReferences")}
               </h3>
               <p className="text-gray-600">
-                Get links to original videos for each recipe, so you can watch
-                the cooking process step by step.
+                {getTranslation(t, "home.features.videoReferencesDesc")}
               </p>
             </div>
 
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <div className="text-3xl mb-4">💬</div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                AI Assistant
+                {getTranslation(t, "home.features.aiAssistant")}
               </h3>
               <p className="text-gray-600">
-                Ask questions about cooking techniques, ingredients, and
-                substitutions powered by AI.
+                {getTranslation(t, "home.features.aiAssistantDesc")}
               </p>
             </div>
           </div>
@@ -119,8 +117,7 @@ export default function Home() {
             Gastronogeek Chatbot
           </h1>
           <p className="text-gray-600 mb-8">
-            Your personal cooking assistant powered by Gastronogeek's amazing
-            recipes and cooking videos.
+            {getTranslation(t, "home.signInDesc")}
           </p>
 
           <Button
@@ -128,12 +125,11 @@ export default function Home() {
             className="w-full bg-orange-600 hover:bg-orange-700 text-white mb-4"
             onClick={() => (window.location.href = getLoginUrl())}
           >
-            Sign In to Continue
+            {getTranslation(t, "home.signIn")}
           </Button>
 
           <p className="text-sm text-gray-500">
-            Sign in with your account to access the chatbot and explore
-            thousands of recipes.
+            {getTranslation(t, "home.signInDesc")}
           </p>
         </div>
       </div>

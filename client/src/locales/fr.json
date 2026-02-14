@@ -1,0 +1,67 @@
+{
+  "common": {
+    "logout": "Déconnexion",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer"
+  },
+  "home": {
+    "title": "Bienvenue sur Gastronogeek Chatbot",
+    "subtitle": "Posez-moi n'importe quelle question sur la cuisine ! Obtenez des recettes, des techniques et des conseils inspirés par les incroyables vidéos de Gastronogeek.",
+    "startChatting": "Commencer à Discuter",
+    "adminPanel": "Panneau d'Administration",
+    "features": {
+      "expertRecipes": "Recettes d'Expert",
+      "expertRecipesDesc": "Accédez aux recettes de la vaste bibliothèque vidéo de Gastronogeek, inspirées par l'anime, les films et la culture pop.",
+      "videoReferences": "Références Vidéo",
+      "videoReferencesDesc": "Obtenez des liens vers les vidéos originales pour chaque recette, afin que vous puissiez regarder le processus de cuisson étape par étape.",
+      "aiAssistant": "Assistant IA",
+      "aiAssistantDesc": "Posez des questions sur les techniques de cuisine, les ingrédients et les substitutions alimentées par l'IA."
+    },
+    "signIn": "Se Connecter pour Continuer",
+    "signInDesc": "Connectez-vous avec votre compte pour accéder au chatbot et explorer des milliers de recettes."
+  },
+  "chatbot": {
+    "title": "Chatbot Gastronogeek",
+    "subtitle": "Posez-moi n'importe quelle question sur la cuisine !",
+    "newChat": "Nouvelle Conversation",
+    "recentChats": "Conversations Récentes",
+    "placeholder": "Posez-moi une question sur la cuisine...",
+    "welcome": "Bienvenue !",
+    "welcomeDesc": "Posez-moi n'importe quelle question sur les recettes et les techniques culinaires de Gastronogeek. Je suis là pour vous aider !",
+    "thinking": "Je réfléchis...",
+    "relatedVideos": "Vidéos Connexes"
+  },
+  "admin": {
+    "title": "Panneau d'Administration",
+    "subtitle": "Gérer le contenu de Gastronogeek",
+    "menu": "Menu",
+    "dashboard": "Tableau de Bord",
+    "contentSync": "Synchronisation du Contenu",
+    "videos": "Vidéos",
+    "totalVideos": "Vidéos Totales",
+    "lastSync": "Dernière Synchronisation",
+    "status": "Statut",
+    "ready": "Prêt",
+    "syncing": "Synchronisation...",
+    "youtubeSync": "Synchronisation YouTube",
+    "youtubeSyncDesc": "Récupérez et synchronisez les vidéos de la chaîne YouTube de Gastronogeek. Cela ajoutera de nouvelles vidéos à la base de connaissances.",
+    "syncVideos": "Synchroniser les Vidéos depuis YouTube",
+    "syncingVideos": "Synchronisation des Vidéos...",
+    "recentVideos": "Vidéos Récentes",
+    "noVideosSynced": "Aucune vidéo synchronisée pour le moment. Cliquez sur \"Synchroniser les Vidéos depuis YouTube\" pour commencer.",
+    "views": "vues",
+    "duration": "durée"
+  },
+  "messages": {
+    "syncSuccess": "Vidéos synchronisées avec succès !",
+    "syncError": "Erreur lors de la synchronisation des vidéos. Veuillez réessayer.",
+    "enterMessage": "Veuillez entrer un message",
+    "failedToSend": "Échec de l'envoi du message. Veuillez réessayer."
+  }
+}

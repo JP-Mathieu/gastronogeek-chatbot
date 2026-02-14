@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Redirect } from "wouter";
+import { useTranslation, getTranslation } from "@/hooks/useTranslation";
 
 interface Message {
   id?: number;
@@ -26,6 +27,7 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const t = useTranslation("fr");
 
   const sendMessageMutation = trpc.chatbot.sendMessage.useMutation();
   const getChatHistoryQuery = trpc.chatbot.getChatHistory.useQuery({});
@@ -48,7 +50,7 @@ export default function Chatbot() {
     e.preventDefault();
 
     if (!inputValue.trim()) {
-      toast.error("Please enter a message");
+      toast.error(getTranslation(t, "messages.enterMessage"));
       return;
     }
 
@@ -83,7 +85,7 @@ export default function Chatbot() {
         },
       ]);
     } catch (error) {
-      toast.error("Failed to send message. Please try again.");
+      toast.error(getTranslation(t, "messages.failedToSend"));
       // Remove the loading message
       setMessages((prev) => prev.slice(0, -1));
     } finally {
@@ -110,15 +112,19 @@ export default function Chatbot() {
         <div className="w-64 border-r bg-muted/30 p-4 flex flex-col">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-primary">Gastronogeek</h1>
-            <p className="text-sm text-muted-foreground">Cooking Assistant</p>
+            <p className="text-sm text-muted-foreground">
+              {getTranslation(t, "chatbot.title")}
+            </p>
           </div>
 
           <Button className="w-full mb-4" variant="outline">
-            New Chat
+            {getTranslation(t, "chatbot.newChat")}
           </Button>
 
           <div className="flex-1">
-            <h3 className="text-sm font-semibold mb-2">Recent Chats</h3>
+            <h3 className="text-sm font-semibold mb-2">
+              {getTranslation(t, "chatbot.recentChats")}
+            </h3>
             {/* TODO: Add chat history list */}
           </div>
 
@@ -141,7 +147,7 @@ export default function Chatbot() {
               onClick={() => logout()}
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {getTranslation(t, "common.logout")}
             </Button>
           </div>
         </div>
@@ -160,9 +166,11 @@ export default function Chatbot() {
               <Menu className="w-5 h-5" />
             </Button>
             <div>
-              <h2 className="text-lg font-semibold">Gastronogeek Chatbot</h2>
+              <h2 className="text-lg font-semibold">
+                {getTranslation(t, "chatbot.title")}
+              </h2>
               <p className="text-sm text-muted-foreground">
-                Ask me anything about cooking!
+                {getTranslation(t, "chatbot.subtitle")}
               </p>
             </div>
           </div>
@@ -174,10 +182,11 @@ export default function Chatbot() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-12">
                 <div className="text-4xl mb-4">👨‍🍳</div>
-                <h3 className="text-xl font-semibold mb-2">Welcome!</h3>
+                <h3 className="text-xl font-semibold mb-2">
+                  {getTranslation(t, "chatbot.welcome")}
+                </h3>
                 <p className="text-muted-foreground max-w-sm">
-                  Ask me anything about Gastronogeek's recipes and cooking
-                  techniques. I'm here to help!
+                  {getTranslation(t, "chatbot.welcomeDesc")}
                 </p>
               </div>
             ) : (
@@ -197,7 +206,7 @@ export default function Chatbot() {
                         <div className="flex items-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin" />
                           <span className="text-sm text-muted-foreground">
-                            Thinking...
+                            {getTranslation(t, "chatbot.thinking")}
                           </span>
                         </div>
                       </Card>
@@ -209,7 +218,8 @@ export default function Chatbot() {
                         {msg.sourceVideos && msg.sourceVideos.length > 0 && (
                           <div className="mt-2 pt-2 border-t text-xs text-muted-foreground">
                             <p className="font-semibold mb-1">
-                              Related Videos: {msg.sourceVideos.length}
+                              {getTranslation(t, "chatbot.relatedVideos")}:{" "}
+                              {msg.sourceVideos.length}
                             </p>
                           </div>
                         )}
@@ -228,7 +238,7 @@ export default function Chatbot() {
           <form onSubmit={handleSendMessage} className="max-w-2xl mx-auto">
             <div className="flex gap-2">
               <Input
-                placeholder="Ask me about cooking..."
+                placeholder={getTranslation(t, "chatbot.placeholder")}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={isLoading}

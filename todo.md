@@ -39,3 +39,8 @@
 
 ## Bug Fixes
 - [x] Fix OAuth callback error when signing in
+
+## Internationalization (i18n)
+- [x] Add French language support to all UI pages
+- [x] Create translation files for Home, Chatbot, and Admin pages
+- [ ] Add language selector (optional)

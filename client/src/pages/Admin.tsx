@@ -6,11 +6,13 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { Redirect } from "wouter";
+import { useTranslation, getTranslation } from "@/hooks/useTranslation";
 
 export default function Admin() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [isSyncing, setIsSyncing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const t = useTranslation("fr");
 
   const syncMutation = trpc.content.syncYouTubeVideos.useMutation();
   const videoCountQuery = trpc.content.getVideoCount.useQuery();
@@ -31,7 +33,7 @@ export default function Admin() {
       videoCountQuery.refetch();
       storedVideosQuery.refetch();
     } catch (error) {
-      toast.error("Failed to sync videos. Please try again.");
+      toast.error(getTranslation(t, "messages.syncError"));
       console.error("Sync error:", error);
     } finally {
       setIsSyncing(false);
@@ -57,21 +59,23 @@ export default function Admin() {
         <div className="w-64 border-r bg-muted/30 p-4 flex flex-col">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-primary">Gastronogeek</h1>
-            <p className="text-sm text-muted-foreground">Admin Panel</p>
+            <p className="text-sm text-muted-foreground">
+              {getTranslation(t, "admin.title")}
+            </p>
           </div>
 
           <div className="space-y-2 flex-1">
             <div className="text-sm font-semibold text-muted-foreground mb-4">
-              Menu
+              {getTranslation(t, "admin.menu")}
             </div>
             <Button variant="outline" className="w-full justify-start">
-              Dashboard
+              {getTranslation(t, "admin.dashboard")}
             </Button>
             <Button variant="outline" className="w-full justify-start">
-              Content Sync
+              {getTranslation(t, "admin.contentSync")}
             </Button>
             <Button variant="outline" className="w-full justify-start">
-              Videos
+              {getTranslation(t, "admin.videos")}
             </Button>
           </div>
 
@@ -94,7 +98,7 @@ export default function Admin() {
               onClick={() => logout()}
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {getTranslation(t, "common.logout")}
             </Button>
           </div>
         </div>
@@ -113,9 +117,11 @@ export default function Admin() {
               <Menu className="w-5 h-5" />
             </Button>
             <div>
-              <h2 className="text-lg font-semibold">Admin Dashboard</h2>
+              <h2 className="text-lg font-semibold">
+                {getTranslation(t, "admin.title")}
+              </h2>
               <p className="text-sm text-muted-foreground">
-                Manage Gastronogeek content
+                {getTranslation(t, "admin.subtitle")}
               </p>
             </div>
           </div>
@@ -128,7 +134,7 @@ export default function Admin() {
             <div className="grid md:grid-cols-3 gap-4">
               <Card className="p-6">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Total Videos
+                  {getTranslation(t, "admin.totalVideos")}
                 </div>
                 <div className="text-3xl font-bold">
                   {videoCountQuery.data?.count || 0}
@@ -137,27 +143,32 @@ export default function Admin() {
 
               <Card className="p-6">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Last Sync
+                  {getTranslation(t, "admin.lastSync")}
                 </div>
                 <div className="text-lg font-semibold">
-                  {new Date().toLocaleDateString()}
+                  {new Date().toLocaleDateString("fr-FR")}
                 </div>
               </Card>
 
               <Card className="p-6">
-                <div className="text-sm text-muted-foreground mb-2">Status</div>
+                <div className="text-sm text-muted-foreground mb-2">
+                  {getTranslation(t, "admin.status")}
+                </div>
                 <div className="text-lg font-semibold text-green-600">
-                  {isSyncing ? "Syncing..." : "Ready"}
+                  {isSyncing
+                    ? getTranslation(t, "admin.syncing")
+                    : getTranslation(t, "admin.ready")}
                 </div>
               </Card>
             </div>
 
             {/* Sync Section */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">YouTube Sync</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                {getTranslation(t, "admin.youtubeSync")}
+              </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Fetch and sync videos from Gastronogeek's YouTube channel. This
-                will add new videos to the knowledge base.
+                {getTranslation(t, "admin.youtubeSyncDesc")}
               </p>
               <Button
                 onClick={handleSyncVideos}
@@ -167,12 +178,12 @@ export default function Admin() {
                 {isSyncing ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Syncing Videos...
+                    {getTranslation(t, "admin.syncingVideos")}
                   </>
                 ) : (
                   <>
                     <RefreshCw className="w-4 h-4 mr-2" />
-                    Sync Videos from YouTube
+                    {getTranslation(t, "admin.syncVideos")}
                   </>
                 )}
               </Button>
@@ -180,7 +191,9 @@ export default function Admin() {
 
             {/* Recent Videos */}
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Videos</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                {getTranslation(t, "admin.recentVideos")}
+              </h3>
               {storedVideosQuery.data?.videos &&
               storedVideosQuery.data.videos.length > 0 ? (
                 <div className="space-y-3">
@@ -202,8 +215,10 @@ export default function Admin() {
                           {video.description}
                         </p>
                         <div className="text-xs text-muted-foreground mt-1">
-                          {video.viewCount?.toLocaleString()} views •{" "}
-                          {video.duration ? `${Math.round(video.duration / 60)}m` : "N/A"}
+                          {video.viewCount?.toLocaleString()} {getTranslation(t, "admin.views")} •{" "}
+                          {video.duration
+                            ? `${Math.round(video.duration / 60)}m`
+                            : "N/A"}
                         </div>
                       </div>
                     </div>
@@ -211,8 +226,7 @@ export default function Admin() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  No videos synced yet. Click "Sync Videos from YouTube" to get
-                  started.
+                  {getTranslation(t, "admin.noVideosSynced")}
                 </p>
               )}
             </Card>
