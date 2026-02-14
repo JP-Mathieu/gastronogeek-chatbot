@@ -44,3 +44,13 @@
 - [x] Add French language support to all UI pages
 - [x] Create translation files for Home, Chatbot, and Admin pages
 - [ ] Add language selector (optional)
+
+## Current Issues
+- [x] Fix "Failed to process your message" error in chatbot (replaced OpenAI with Mistral)
+
+## Mistral AI Integration
+- [x] Install Mistral SDK
+- [x] Create Mistral service with chat and embedding functions
+- [x] Replace OpenAI with Mistral in chatbot router
+- [x] Test Mistral API key validation
+- [x] All tests passing (8 chatbot tests, 3 mistral tests)

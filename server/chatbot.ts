@@ -4,12 +4,7 @@ import { getDb } from "./db";
 import { chatMessages, chatSessions, videos, recipes, ChatMessage } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 
-import OpenAI from "openai";
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { generateMistralResponse } from "./services/mistralService";
 
 // Schema for chat input
 const chatInputSchema = z.object({
@@ -36,27 +31,11 @@ export const chatbotRouter = router({
         const { message, sessionId } = input;
         const userId = ctx.user.id;
 
-        // For now, generate a simple response using OpenAI
-        // In production, this would use RAG to retrieve relevant videos
-        const completion = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a helpful cooking assistant based on Gastronogeek's recipes and cooking videos. Help users with cooking questions, recipes, and techniques.",
-            },
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-          max_tokens: 500,
-        });
-
-        const botResponse =
-          completion.choices[0]?.message?.content ||
-          "I couldn't generate a response. Please try again.";
+        // Generate response using Mistral AI
+        const botResponse = await generateMistralResponse(
+          message,
+          "You are a helpful cooking assistant based on Gastronogeek's recipes and cooking videos. Help users with cooking questions, recipes, and techniques. Respond in French when the user writes in French."
+        );
 
         // Save the chat message to the database
         const db = await getDb();
@@ -79,7 +58,8 @@ export const chatbotRouter = router({
         };
       } catch (error) {
         console.error("Error in sendMessage:", error);
-        throw new Error("Failed to process your message");
+        const errorMessage = error instanceof Error ? error.message : "Failed to process your message";
+        throw new Error(errorMessage);
       }
     }),
 
