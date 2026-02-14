@@ -36,3 +36,6 @@
 - [x] Test content indexing and search
 - [ ] Performance optimization
 - [ ] Create checkpoint before deployment
+
+## Bug Fixes
+- [x] Fix OAuth callback error when signing in
