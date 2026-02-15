@@ -54,9 +54,10 @@ describe("Chatbot Exhaustive Tests", () => {
         path.join(process.cwd(), "server/chatbot.ts"),
         "utf-8"
       );
-      expect(chatbotFile).toContain(
-        "const keywords = message.toLowerCase().split(/\\s+/).filter(w => w.length > 2)"
-      );
+      // Should clean message and extract keywords
+      expect(chatbotFile).toContain("cleanMessage");
+      expect(chatbotFile).toContain("keywords");
+      expect(chatbotFile).toContain("filter(w => w.length > 2)");
     });
 
     it("should search all videos in database (no limit)", () => {

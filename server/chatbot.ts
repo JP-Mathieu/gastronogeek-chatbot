@@ -39,27 +39,49 @@ export const chatbotRouter = router({
         
         if (db) {
           // Extract keywords from the user's message
-          const keywords = message.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+          // Remove punctuation and extract meaningful words
+          const cleanMessage = message.toLowerCase().replace(/[^a-zàâäæçéèêëïîôœùûüœ\s]/g, '');
+          const keywords = cleanMessage.split(/\s+/).filter(w => w.length > 2);
           
           // Search for videos matching any of the keywords
           let searchResults: any[] = [];
           
           if (keywords.length > 0) {
-            // Build search conditions for each keyword (case-insensitive)
-            const searchConditions = keywords.flatMap(keyword => [
-              like(videos.title, `%${keyword}%`),
-              like(videos.description, `%${keyword}%`),
-            ]);
+            // Filter out common French stop words that are less meaningful
+            const stopWords = ['comment', 'faire', 'comment', 'pour', 'comment', 'quoi', 'quel', 'avec', 'dans', 'pour', 'comment', 'peut', 'peux', 'dois', 'doit', 'peut', 'peux', 'faire', 'faire'];
+            const meaningfulKeywords = keywords.filter(k => !stopWords.includes(k) && k.length > 3);
             
-            // Search for videos matching any keyword (search ALL videos, return top 5)
-            const allMatches = await db
-              .select()
-              .from(videos)
-              .where(or(...searchConditions))
-              .orderBy(desc(videos.publishedAt));
+            // If we have meaningful keywords, search with those first
+            if (meaningfulKeywords.length > 0) {
+              const meaningfulConditions = meaningfulKeywords.flatMap(keyword => [
+                like(videos.title, `%${keyword}%`),
+                like(videos.description, `%${keyword}%`),
+              ]);
+              
+              const meaningfulMatches = await db
+                .select()
+                .from(videos)
+                .where(or(...meaningfulConditions))
+                .orderBy(desc(videos.publishedAt));
+              
+              searchResults = meaningfulMatches.slice(0, 5);
+            }
             
-            // Return only the top 5 most relevant results
-            searchResults = allMatches.slice(0, 5);
+            // If no results with meaningful keywords, try all keywords
+            if (searchResults.length === 0) {
+              const searchConditions = keywords.flatMap(keyword => [
+                like(videos.title, `%${keyword}%`),
+                like(videos.description, `%${keyword}%`),
+              ]);
+              
+              const allMatches = await db
+                .select()
+                .from(videos)
+                .where(or(...searchConditions))
+                .orderBy(desc(videos.publishedAt));
+              
+              searchResults = allMatches.slice(0, 5);
+            }
           }
           
           // If no search results, get the most recent videos
