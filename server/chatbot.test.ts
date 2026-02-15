@@ -48,3 +48,25 @@ describe("Chatbot Router", () => {
     expect(chatbotRouter._def.procedures.getRecipes).toBeDefined();
   });
 });
+
+
+describe("Video Search with MySQL", () => {
+  it("should use like() operator instead of ilike() for MySQL compatibility", async () => {
+    const { chatbotRouter } = await import("./chatbot");
+    const chatbotCode = chatbotRouter.toString();
+    
+    // Verify that ilike is not imported in the router
+    const chatbotFile = require("fs").readFileSync("./server/chatbot.ts", "utf-8");
+    expect(chatbotFile).toContain("import { eq, desc, or, like }");
+    expect(chatbotFile).not.toContain("ilike(videos.title");
+    expect(chatbotFile).not.toContain("ilike(videos.description");
+  });
+
+  it("should use like() operator for case-insensitive search", async () => {
+    const chatbotFile = require("fs").readFileSync("./server/chatbot.ts", "utf-8");
+    
+    // Verify that like() is used for both title and description
+    expect(chatbotFile).toContain("like(videos.title, `%${keyword}%`)");
+    expect(chatbotFile).toContain("like(videos.description, `%${keyword}%`)");
+  });
+});
