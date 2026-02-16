@@ -12,6 +12,27 @@ import { useTranslation, getTranslation } from "@/hooks/useTranslation";
 import { VideoCard } from "@/components/VideoCard";
 import { ExternalLink } from "lucide-react";
 
+// Simple markdown to HTML converter
+const simpleMarkdownToHtml = (text: string): string => {
+  let html = text
+    // Escape HTML special chars first
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/_(.+?)_/g, '<em>$1</em>')
+    // Line breaks
+    .replace(/\n/g, '<br />')
+    // Links
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline">$1</a>');
+  
+  return html;
+};
+
 interface Message {
   id?: number;
   userMessage: string;
@@ -216,9 +237,14 @@ export default function Chatbot() {
                   ) : (
                     <div className="flex justify-start">
                       <div className="max-w-2xl space-y-3">
-                        {/* Bot text response */}
+                        {/* Bot text response - with markdown support */}
                         <Card className="bg-muted p-3 rounded-lg">
-                          <p className="text-sm">{msg.botResponse}</p>
+                          <div 
+                            className="text-sm prose prose-sm dark:prose-invert max-w-none"
+                            dangerouslySetInnerHTML={{ 
+                              __html: simpleMarkdownToHtml(msg.botResponse) 
+                            }}
+                          />
                           
                           {/* Source links */}
                           {msg.sourceVideos && msg.sourceVideos.length > 0 && (
@@ -248,12 +274,12 @@ export default function Chatbot() {
                         {msg.sourceVideos && msg.sourceVideos.length > 0 && (
                           <div className="space-y-2">
                             <p className="text-xs font-semibold text-muted-foreground">
-                              {getTranslation(t, "chatbot.relatedVideos")} ({msg.sourceVideos.length})
+                              {getTranslation(t, "chatbot.videoReferences")}
                             </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {msg.sourceVideos.map((video: any) => (
-                                <VideoCard
-                                  key={video.id}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              {msg.sourceVideos.slice(0, 4).map((video: any, idx: number) => (
+                                <VideoCard 
+                                  key={idx} 
                                   id={video.id}
                                   title={video.title}
                                   description={video.description}
@@ -281,9 +307,9 @@ export default function Chatbot() {
           <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto">
             <div className="flex gap-2">
               <Input
-                placeholder={getTranslation(t, "chatbot.placeholder")}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                placeholder={getTranslation(t, "chatbot.inputPlaceholder")}
                 disabled={isLoading}
                 className="flex-1"
               />
