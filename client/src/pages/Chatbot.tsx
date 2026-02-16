@@ -276,7 +276,7 @@ export default function Chatbot() {
                         {msg.sourceVideos && msg.sourceVideos.length > 0 && (
                           <div className="space-y-2">
                             <p className="text-xs font-semibold text-muted-foreground">
-                              {getTranslation(t, "chatbot.videoReferences")}
+                              {getTranslation(t, "chatbot.relatedVideos")}
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                               {msg.sourceVideos.slice(0, 4).map((video: any, idx: number) => (
@@ -311,7 +311,7 @@ export default function Chatbot() {
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={getTranslation(t, "chatbot.inputPlaceholder")}
+                placeholder={getTranslation(t, "chatbot.placeholder")}
                 disabled={isLoading}
                 className="flex-1"
               />
