@@ -50,14 +50,16 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const historyLoadedRef = useRef(false);
   const t = useTranslation("fr");
 
   const sendMessageMutation = trpc.chatbot.sendMessage.useMutation();
   const getChatHistoryQuery = trpc.chatbot.getChatHistory.useQuery({});
 
-  // Load chat history on mount
+  // Load chat history only once on mount
   useEffect(() => {
-    if (getChatHistoryQuery.data) {
+    if (getChatHistoryQuery.data && !historyLoadedRef.current) {
+      historyLoadedRef.current = true;
       setMessages(getChatHistoryQuery.data);
     }
   }, [getChatHistoryQuery.data]);

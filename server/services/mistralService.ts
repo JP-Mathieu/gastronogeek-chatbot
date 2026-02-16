@@ -40,15 +40,28 @@ export async function generateMistralResponse(
 
     // Handle both string and ContentChunk[] types
     if (typeof message === "string") {
+      console.log(`[Mistral] Response is string, length: ${message.length}`);
       return message;
     }
 
-    // If it's an array of content chunks, extract text from first chunk
+    // If it's an array of content chunks, concatenate all text chunks
     if (Array.isArray(message) && message.length > 0) {
-      const chunk = message[0] as any;
-      return chunk.text || "";
+      const textParts = message
+        .map((chunk: any) => {
+          // Support multiple chunk formats
+          if (typeof chunk === 'string') return chunk;
+          if (chunk.text) return chunk.text;
+          if (chunk.content) return chunk.content;
+          return '';
+        })
+        .filter((text: string) => text.length > 0);
+      
+      const fullText = textParts.join('');
+      console.log(`[Mistral] Processed ${message.length} chunks, total length: ${fullText.length}`);
+      return fullText;
     }
 
+    console.warn(`[Mistral] Unexpected message format:`, message);
     return "";
   } catch (error) {
     console.error("Error generating Mistral response:", error);
